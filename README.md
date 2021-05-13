@@ -12,7 +12,7 @@ This template contains several parameters that are having crertain default value
 
 Parameters	| Type	    | Default value	                | Description
 ------------|-----------|-------------------------------|---------------------
-webAppName	| string	| "webApp-<uniqueString>"	    | App name
+webAppName	| string	| "webApp-\<uniqueString>"	    | App name
 location	| string	| "[resourceGroup().location]"	| App region
 sku	        | string	| "F1"	                        | Instance size (F1 = Free Tier)
 language	| string	| ".net"	                    | Programming language stack (.net, php, node, html)
@@ -23,7 +23,7 @@ Two Azure resources are defined in the template:
 - Microsoft.Web/sites: create an App Service app.
 
 
-### Deploy the template
+### Deploying the template
 
 
 
