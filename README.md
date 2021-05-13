@@ -48,6 +48,7 @@ This file contains the parameters that will be used to create the resource.
 ## Deploying the template ([azuredeploy.sh](https://github.com/jainayu/webapp-basic-windows-azure-template/blob/main/azuredeploy.sh))
 
 Here I have made a shell script using Azure CLI to deploy the teamplate. 
+The following code deploys the Windows Basic WebApp using the template file.
 
 ```bash
 RGName="rg-practice-dev-in-004"
@@ -56,8 +57,6 @@ ParameterFilePath="./azuredeploy.parameters.json"
 
 az deployment group create --resource-group $RGName --template-file $TemplateFilePath --parameters $ParameterFilePath
 ```
-
-The following code deploys the Windows Basic WebApp using the template file.
 
 
 ----------
