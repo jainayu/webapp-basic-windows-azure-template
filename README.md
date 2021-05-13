@@ -25,8 +25,8 @@ language	| string	| ".net"	                    | Programming language stack (.ne
 repoUrl	    | string	| " "	                        | External Git repo (optional)
 
 Two Azure resources are defined in the template:
-- Microsoft.Web/serverfarms: create an App Service plan.
-- Microsoft.Web/sites: create an App Service app.
+- *`Microsoft.Web/serverfarms`*: create an App Service plan.
+- *`Microsoft.Web/sites`*: create an App Service app.
 
 
 ## Reviewing the parameter file ([azuredeploy.parameters.json](https://github.com/jainayu/webapp-basic-windows-azure-template/blob/main/azuredeploy.parameters.json))
