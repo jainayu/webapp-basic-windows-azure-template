@@ -1,4 +1,4 @@
-# Azure Resource Manager Template + Azure CLI: Windows Basic WebApp 
+# Deploy Windows WebApp using ARM Template and Azure CLI 
 
 In this project we'll get to know how to deploying an app to the cloud using an Azure Resource Manager template (ARM template) and Azure CLI.
 
