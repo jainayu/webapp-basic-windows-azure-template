@@ -1,117 +1,129 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "webAppName": {
-            "type": "string",
-            "defaultValue": "[concat('webApp-', uniqueString(resourceGroup().id))]",
-            "metadata": {
-                "description": "Web app name."
-            },
-            "minLength": 2
+        "subscriptionId": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
         },
         "location": {
-            "type": "string",
-            "defaultValue": "[resourceGroup().location]",
-            "metadata": {
-                "description": "Location for all resources."
-            }
+            "type": "string"
+        },
+        "hostingPlanName": {
+            "type": "string"
+        },
+        "serverFarmResourceGroup": {
+            "type": "string"
+        },
+        "alwaysOn": {
+            "type": "bool"
         },
         "sku": {
-            "type": "string",
-            "defaultValue": "F1",
-            "metadata": {
-                "description": "The SKU of App Service Plan."
-            }
+            "type": "string"
         },
-        "language": {
-            "type": "string",
-            "defaultValue": ".net",
-            "allowedValues": [
-                ".net",
-                "php",
-                "node",
-                "html"
-            ],
-            "metadata": {
-                "description": "The language stack of the app."
-            }
-        },    
-        "repoUrl": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Optional Git Repo URL, if empty a 'hello world' app will be deploy from the Azure-Samples repo"
-            }
-        }
-    },
-    "variables": {
-        "appServicePlanPortalName": "[concat('AppServicePlan-', parameters('webAppName'))]",
-        "gitRepoReference":{
-            ".net":"https://github.com/Azure-Samples/app-service-web-dotnet-get-started",
-            "node":"https://github.com/Azure-Samples/nodejs-docs-hello-world",
-            "php":"https://github.com/Azure-Samples/php-docs-hello-world",
-            "html":"https://github.com/Azure-Samples/html-docs-hello-world"
+        "skuCode": {
+            "type": "string"
         },
-        "gitRepoUrl":"[if(empty(parameters('repoUrl')), variables('gitRepoReference')[parameters('language')], parameters('repoUrl'))]",
-        "configReference": {
-            ".net": {
-                "comments": ".Net app. No additional configuration needed."
-            },
-            "html": {
-                "comments": "HTML app. No additional configuration needed."
-            },
-            "php": {
-                "phpVersion": "7.4"
-            },
-            "node": {
-                "appSettings": [
-                    {
-                        "name": "WEBSITE_NODE_DEFAULT_VERSION",
-                        "value": "12.15.0"
-                    }
-                ]
-            }
+        "workerSize": {
+            "type": "string"
+        },
+        "workerSizeId": {
+            "type": "string"
+        },
+        "numberOfWorkers": {
+            "type": "string"
+        },
+        "currentStack": {
+            "type": "string"
+        },
+        "phpVersion": {
+            "type": "string"
+        },
+        "netFrameworkVersion": {
+            "type": "string"
         }
     },
     "resources": [
         {
-            "apiVersion": "2020-06-01",
-            "type": "Microsoft.Web/serverfarms",
-            "name": "[variables('appServicePlanPortalName')]",
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('name')]",
+            "type": "Microsoft.Web/sites",
             "location": "[parameters('location')]",
-            "sku": {
-                "name": "[parameters('sku')]"
+            "tags": null,
+            "dependsOn": [
+                "microsoft.insights/components/booksstoreapi",
+                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('name')]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference('microsoft.insights/components/booksstoreapi', '2015-05-01').InstrumentationKey]"
+                        },
+                        {
+                            "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                            "value": "[reference('microsoft.insights/components/booksstoreapi', '2015-05-01').ConnectionString]"
+                        },
+                        {
+                            "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+                            "value": "~2"
+                        },
+                        {
+                            "name": "XDT_MicrosoftApplicationInsights_Mode",
+                            "value": "default"
+                        }
+                    ],
+                    "metadata": [
+                        {
+                            "name": "CURRENT_STACK",
+                            "value": "[parameters('currentStack')]"
+                        }
+                    ],
+                    "phpVersion": "[parameters('phpVersion')]",
+                    "netFrameworkVersion": "[parameters('netFrameworkVersion')]",
+                    "alwaysOn": "[parameters('alwaysOn')]"
+                },
+                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "clientAffinityEnabled": true
             }
         },
         {
-            "apiVersion": "2020-06-01",
-            "type": "Microsoft.Web/sites",
-            "name": "[parameters('webAppName')]",
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('hostingPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
             "location": "[parameters('location')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]"
-            ],
+            "kind": "",
+            "tags": null,
+            "dependsOn": [],
             "properties": {
-                "siteConfig": "[variables('configReference')[parameters('language')]]",
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]"
+                "name": "[parameters('hostingPlanName')]",
+                "workerSize": "[parameters('workerSize')]",
+                "workerSizeId": "[parameters('workerSizeId')]",
+                "numberOfWorkers": "[parameters('numberOfWorkers')]"
             },
-            "resources": [
-                {
-                    "type": "sourcecontrols",
-                    "apiVersion": "2020-06-01",
-                    "name": "web",
-                    "location": "[parameters('location')]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
-                    ],
-                    "properties": {
-                        "repoUrl": "[variables('gitRepoUrl')]",
-                        "branch": "master",
-                        "isManualIntegration": true
-                    }
-                }
-            ]
+            "sku": {
+                "Tier": "[parameters('sku')]",
+                "Name": "[parameters('skuCode')]"
+            }
+        },
+        {
+            "apiVersion": "2020-02-02-preview",
+            "name": "booksstoreapi",
+            "type": "microsoft.insights/components",
+            "location": "centralindia",
+            "tags": null,
+            "dependsOn": [],
+            "properties": {
+                "ApplicationId": "[parameters('name')]",
+                "Request_Source": "IbizaWebAppExtensionCreate",
+                "Flow_Type": "Redfield",
+                "Application_Type": "web",
+                "WorkspaceResourceId": "/subscriptions/5c7bfedc-4137-4ea8-8a11-d56a4c78b4f9/resourcegroups/defaultresourcegroup-cin/providers/microsoft.operationalinsights/workspaces/defaultworkspace-5c7bfedc-4137-4ea8-8a11-d56a4c78b4f9-cin"
+            }
         }
     ]
 }

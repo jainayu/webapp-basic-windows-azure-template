@@ -1,16 +1,25 @@
-# Deploy Windows WebApp using ARM Template and Azure CLI 
+# Deploy Windows Basic WebApp using ARM Template and Azure CLI 
 
 In this project we'll get to know how to deploying an app to the cloud using an Azure Resource Manager template (ARM template) and Azure CLI.
 
 An *ARM template* is a *JavaScript Object Notation (JSON)* file that defines the infrastructure and configuration for our project. The template uses declarative syntax. In declarative syntax, you describe your intended deployment without writing the sequence of programming commands to create the deployment.
+
+
 
 To deploy our Windows Basic WebApp we are having 3 files, 2 `.json` files and one `bash` file:
   1. azuredeploy.json
   2. azuredeploy.parameters.json
   3. azuredeploy.sh
 
+## Look and Feel
 
-## Review the template file ([azuredeploy.json](https://github.com/jainayu/webapp-basic-windows-azure-template/blob/main/azuredeploy.json))
+<code>![RunningScript | 100x100](./images/RunningScript.png)</code>
+
+<code>![FinishedRunning | 100x100](./images/FinishedRunning.png)</code>
+
+<code>![DeployedWebApp| 100x100](./images//DeployedWebApp.png)</code>
+
+## Review the template file ([azuredeploy.json](./azuredeploy.json))
 
 It deploys an App Service plan and an App Service app. It's compatible with .NET Core, .NET Framework, PHP, Node.js, and Static HTML apps.
 
@@ -29,7 +38,7 @@ Two Azure resources are defined in the template:
 - *`Microsoft.Web/sites`*: create an App Service app.
 
 
-## Reviewing the parameter file ([azuredeploy.parameters.json](https://github.com/jainayu/webapp-basic-windows-azure-template/blob/main/azuredeploy.parameters.json))
+## Reviewing the parameter file ([azuredeploy.parameters.json](./azuredeploy.parameters.json)))
 
 This file contains the parameters that will be used to create the resource.
 
@@ -45,7 +54,7 @@ This file contains the parameters that will be used to create the resource.
 }
 ```
 
-## Deploying the template ([azuredeploy.sh](https://github.com/jainayu/webapp-basic-windows-azure-template/blob/main/azuredeploy.sh))
+## Deploying the template ([azuredeploy.sh](./azuredeploy.sh))
 
 Here I have made a shell script using Azure CLI to deploy the teamplate. 
 The following code deploys the Windows Basic WebApp using the template file.
